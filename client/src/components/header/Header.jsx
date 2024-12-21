@@ -9,9 +9,10 @@ import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import {format} from "date-fns"
 import { useState } from "react";
-
+import {useNavigate} from 'react-router-dom';
 
 const Header = ({type}) => {
+    const [destination, setDestination] = useState("");
     const [openDate,setOpenDate]=useState(false);
     const [date, setDate] = useState([
         {
@@ -36,6 +37,12 @@ const Header = ({type}) => {
           };
         });
       };
+
+    const navigate=useNavigate();
+
+    const handleSearch=()=>{
+        navigate("/hotels",{state:{destination,date,options}})
+    }
   return (
     <div className="header">
         <div className={type==="list"?"headerContainer listMode":"headerContainer"}>
@@ -73,7 +80,9 @@ const Header = ({type}) => {
             <div className="headerSearch">
                 <div className="headerSearchItem">
                     <FontAwesomeIcon icon={faHotel} className="headerIcon"/>
-                    <input type="text" placeholder="Where are you going?" className="headerSearchInput"/>
+                    <input type="text" placeholder="Where are you going?" className="headerSearchInput"
+                    onChange={(e)=>{setDestination(e.target.value)}}
+                    />
                 </div>
                 <div className="headerSearchItem">
                     <FontAwesomeIcon icon={faCalendarDays} className="headerIcon"/>
@@ -93,7 +102,7 @@ const Header = ({type}) => {
                     <span onClick={()=>{
                         setOpenOptions(!openOptions);
                     }} className="headerSearchText">{`${options.adult} adult : ${options.children} children : ${options.room} room`}</span>
-                    {openOptions && <div className="options">
+                    {openOptions && (<div className="options">
                         <div className="optionItem">
                             <span className="optionText">Adult</span>
                             <div className="optionCounter">
@@ -138,10 +147,14 @@ const Header = ({type}) => {
                                 }}>+</button>
                             </div>
                         </div>
+                    </div>)}
+                </div>
 
-                    </div>}
+                <div className="headerSearchItem">
+                    <button className="headerBtn" onClick={handleSearch}>Search</button>
                 </div>
             </div>
+
             </>}
 
         </div>
