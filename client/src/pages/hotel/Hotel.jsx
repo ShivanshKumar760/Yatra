@@ -10,13 +10,16 @@ import { useParams } from 'react-router-dom';
 import useFetch from "../../hooks/useFetch";
 import { useContext } from "react";
 import { SearchContext } from "../../context/SearchContext";
-
+import { AuthContext } from "../../context/AuthContext";
+import {useNavigate} from "react-router-dom";
+import Reserve from "../../components/reserve/Reserve";
 
 //code start's from here 
 const Hotel = () => {
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
   const {id}=useParams();
+  const [openModal, setOpenModal] = useState(false);
   console.log("This is the id of the hotel we are on:",id);
 
   console.log("The parent url is :",import.meta.env.VITE_BACKEND_API);
@@ -37,6 +40,10 @@ const Hotel = () => {
   console.log("Day diffrence b/w check in and  check out is :",dayDifference(dates[0].endDate,dates[0].startDate));
   const days = dayDifference(dates[0].endDate, dates[0].startDate);
 
+  const {user}=useContext(AuthContext);
+
+  const navigate=useNavigate();
+
   const handleOpen = (i) => {
     setSlideNumber(i);
     setOpen(true);
@@ -56,7 +63,7 @@ const Hotel = () => {
 
   const handleClick = () => {
     if (user) {
-      // setOpenModal(true);
+      setOpenModal(true);
     } else {
       navigate("/login");
     }
@@ -128,7 +135,7 @@ const Hotel = () => {
                 <p className="hotelDesc">{data.desc}</p>
               </div>
               <div className="hotelDetailsPrice">
-                {/* <h1>Perfect for a {days}-night stay!</h1> */}
+                <h1>Perfect for a {days}-night stay!</h1>
                 <span>
                   Located in the real heart of Krakow, this property has an
                   excellent location score of 9.8!
@@ -144,7 +151,7 @@ const Hotel = () => {
           <Footer />
         </div>
       )}
-      {/* {openModal && <Reserve setOpen={setOpenModal} hotelId={id}/>} */}
+      {openModal && <Reserve setOpen={setOpenModal} hotelId={id}/>}
     </div>
   );
 };
