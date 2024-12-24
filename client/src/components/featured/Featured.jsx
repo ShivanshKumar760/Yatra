@@ -1,9 +1,14 @@
+import useFetch from "../../hooks/useFetch";
 import "./featured.css";
 
-
 function Featured() {
+  console.log(import.meta.env.VITE_BACKEND_API);
+  const { data, loading, error }=useFetch(import.meta.env.VITE_BACKEND_API+"/hotels/countByCity?cities=Delhi,Ghaziabad,Gurgaon");
+  console.log(data);
   return (
     <div className="featured">
+        {loading?"Loading Please wait":
+        <>
         <div className="featuredItem">
             <img
             src="https://cf.bstatic.com/xdata/images/city/max500/957801.webp?k=a969e39bcd40cdcc21786ba92826063e3cb09bf307bcfeac2aa392b838e9b7a5&o="
@@ -37,6 +42,8 @@ function Featured() {
             <h2>532 properties</h2>
             </div>
         </div>
+        </>
+        }
     </div>
   )
 };

@@ -10,11 +10,14 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import {format} from "date-fns"
 import { useState } from "react";
 import {useNavigate} from 'react-router-dom';
-
+import { useContext } from "react";
+import { SearchContext } from "../../context/SearchContext";
+import { AuthContext } from "../../context/AuthContext";
+import {Link} from "react-router-dom";
 const Header = ({type}) => {
     const [destination, setDestination] = useState("");
     const [openDate,setOpenDate]=useState(false);
-    const [date, setDate] = useState([
+    const [dates, setDates] = useState([
         {
           startDate: new Date(),
           endDate: new Date(),
@@ -27,7 +30,7 @@ const Header = ({type}) => {
         children: 0,
         room: 1,
     });
-
+    const {user}=useContext(AuthContext);
     const handleOption = (name, operation) => {
         console.log("Called",name)
         setOptions((prev) => {
@@ -40,9 +43,12 @@ const Header = ({type}) => {
 
     const navigate=useNavigate();
 
-    const handleSearch=()=>{
-        navigate("/hotels",{state:{destination,date,options}})
-    }
+    const { dispatch } = useContext(SearchContext);
+
+    const handleSearch = () => {
+      dispatch({ type: "NEW_SEARCH", payload: { destination, dates, options } });
+      navigate("/hotels", { state: { destination, dates, options } });
+    };
   return (
     <div className="header">
         <div className={type==="list"?"headerContainer listMode":"headerContainer"}>
@@ -71,12 +77,19 @@ const Header = ({type}) => {
 
             {type !=="list" &&
             <>
-            <h1 className="headerTitle">A lifetime of discounts? It's Genius.</h1>
+            <h1 className="headerTitle">Make Your Travel Memorable</h1>
+            {/* <h2 className="headerTitle">A lifetime of discounts? It's Genius.</h2> */}
             <p className="headerDesc">
                 Get rewarded for your travels – unlock instant savings of 10% or
                 more with a free Lamabooking account
             </p>
-            <button className="headerBtn">Sign in/Register</button>
+            {!user &&
+                <Link to="/register">
+                    <button className="headerBtn">
+                        Sign in/Register
+                    </button>
+                </Link>
+            }
             <div className="headerSearch">
                 <div className="headerSearchItem">
                     <FontAwesomeIcon icon={faHotel} className="headerIcon"/>
@@ -88,12 +101,12 @@ const Header = ({type}) => {
                     <FontAwesomeIcon icon={faCalendarDays} className="headerIcon"/>
                     <span onClick={()=>{
                         setOpenDate((prevState)=>{return !prevState})
-                    }} className="headerSearchText">{`${format(date[0].startDate,"MM/dd/yyyy")} to ${format(date[0].endDate,"MM/dd/yyyy")}`}</span>
+                    }} className="headerSearchText">{`${format(dates[0].startDate,"MM/dd/yyyy")} to ${format(dates[0].endDate,"MM/dd/yyyy")}`}</span>
                     {openDate &&<DateRange
                         editableDateInputs={true}
-                        onChange={item => setDate([item.selection])}
+                        onChange={item => setDates([item.selection])}
                         moveRangeOnFirstSelection={false}
-                        ranges={date}
+                        ranges={dates}
                         className="date"
                     />}
                 </div>
