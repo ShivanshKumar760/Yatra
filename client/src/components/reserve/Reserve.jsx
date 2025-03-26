@@ -8,29 +8,32 @@ import { SearchContext } from "../../context/SearchContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+/*eslint-disable */
 const Reserve = ({ setOpen, hotelId }) => {
   const [selectedRooms, setSelectedRooms] = useState([]);
-  const { data, loading, error } = useFetch(`${import.meta.env.VITE_BACKEND_API}/hotels/room/${hotelId}`);
+  const { data, loading, error } = useFetch(
+    `${import.meta.env.VITE_BACKEND_API}/hotels/room/${hotelId}`
+  );
   const { dates } = useContext(SearchContext);
 
   const getDatesInRange = (startDate, endDate) => {
-    console.log("Start/check in date is :",startDate);
-    console.log("End/check out date is:",endDate);
+    console.log("Start/check in date is :", startDate);
+    console.log("End/check out date is:", endDate);
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    const date = new Date(start.getTime());//gives back the date for check in date at that time 
+    const date = new Date(start.getTime()); //gives back the date for check in date at that time
 
-    console.log("date is:",date);
-
+    console.log("date is:", date);
 
     const dates = [];
 
-    while (date <= end) {//then we iterate it till the check out date
+    while (date <= end) {
+      //then we iterate it till the check out date
       dates.push(new Date(date).getTime());
       date.setDate(date.getDate() + 1);
     }
-    console.log("dates that are ranging is :",dates);
+    console.log("dates that are ranging is :", dates);
     return dates;
   };
 
@@ -39,8 +42,8 @@ const Reserve = ({ setOpen, hotelId }) => {
   const isAvailable = (roomNumber) => {
     const isFound = roomNumber.unavailableDates.some((date) =>
       alldates.includes(new Date(date).getTime())
-    );//will check if the unavailable date is in the all dates range and if true
-    return !isFound;//then return false so that we can disable the button or check
+    ); //will check if the unavailable date is in the all dates range and if true
+    return !isFound; //then return false so that we can disable the button or check
     //button
   };
 
@@ -49,7 +52,7 @@ const Reserve = ({ setOpen, hotelId }) => {
     const value = e.target.value;
     setSelectedRooms(
       checked
-        ? [...selectedRooms, value]//previous value of array as well as  the new value 
+        ? [...selectedRooms, value] //previous value of array as well as  the new value
         : selectedRooms.filter((item) => item !== value)
     );
   };
@@ -60,11 +63,14 @@ const Reserve = ({ setOpen, hotelId }) => {
     try {
       await Promise.all(
         selectedRooms.map((roomId) => {
-          const res = axios.put(`${import.meta.env.VITE_BACKEND_API}/rooms/availability/${roomId}`, {
-            dates: alldates,//so as soon as some one will click the reserve button
-            //user who has reserved the room for N number of days will update the 
-            //room availablity so for that N days those room wont be available
-          });
+          const res = axios.put(
+            `${import.meta.env.VITE_BACKEND_API}/rooms/availability/${roomId}`,
+            {
+              dates: alldates, //so as soon as some one will click the reserve button
+              //user who has reserved the room for N number of days will update the
+              //room availablity so for that N days those room wont be available
+            }
+          );
           return res.data;
         })
       );
@@ -92,8 +98,8 @@ const Reserve = ({ setOpen, hotelId }) => {
               <div className="rPrice">{item.price}</div>
             </div>
             <div className="rSelectRooms">
-              {item.roomNumbers.map((roomNumber) => (
-                <div className="room">
+              {item.roomNumbers.map((roomNumber, index) => (
+                <div className="room" key={index}>
                   <label>{roomNumber.number}</label>
                   <input
                     type="checkbox"

@@ -23,7 +23,9 @@ app.use("/api/users", usersRoute);
 app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);
 
-
+// app.get("/",(req,res)=>{
+//     res.send("helo");
+// })
 //error handling middleware:
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
