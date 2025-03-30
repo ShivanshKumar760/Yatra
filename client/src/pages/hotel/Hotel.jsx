@@ -1,33 +1,40 @@
 import "./hotel.css";
-import Navbar from "../../components/Navbar/Navbar";
+import Navbar from "../../components/navbar/Navbar";
 import Header from "../../components/header/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import {faCircleArrowLeft,faCircleArrowRight,faCircleXmark,faLocationDot}from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleArrowLeft,
+  faCircleArrowRight,
+  faCircleXmark,
+  faLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
 import MailList from "../../components/mailList/MailList";
 import Footer from "../../components/footer/Footer";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import { useContext } from "react";
 import { SearchContext } from "../../context/SearchContext";
 import { AuthContext } from "../../context/AuthContext";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Reserve from "../../components/reserve/Reserve";
 
-//code start's from here 
+//code start's from here
 const Hotel = () => {
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
-  const {id}=useParams();
+  const { id } = useParams();
   const [openModal, setOpenModal] = useState(false);
-  console.log("This is the id of the hotel we are on:",id);
+  console.log("This is the id of the hotel we are on:", id);
 
-  console.log("The parent url is :",import.meta.env.VITE_BACKEND_API);
-  const { data, loading, error,reFetch }=useFetch(`${import.meta.env.VITE_BACKEND_API}/hotels/find/${id}`);
+  console.log("The parent url is :", import.meta.env.VITE_BACKEND_API);
+  const { data, loading, error, reFetch } = useFetch(
+    `${import.meta.env.VITE_BACKEND_API}/hotels/find/${id}`
+  );
   console.log(`${import.meta.env.VITE_BACKEND_API}/hotels/find/${id}`);
-  console.log("This is the data related to the hotel:",data);
+  console.log("This is the data related to the hotel:", data);
 
-  const {dates,options} = useContext(SearchContext);
+  const { dates, options } = useContext(SearchContext);
   console.log(dates);
 
   const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -37,12 +44,15 @@ const Hotel = () => {
     return diffDays;
   }
 
-  console.log("Day diffrence b/w check in and  check out is :",dayDifference(dates[0].endDate,dates[0].startDate));
+  console.log(
+    "Day diffrence b/w check in and  check out is :",
+    dayDifference(dates[0].endDate, dates[0].startDate)
+  );
   const days = dayDifference(dates[0].endDate, dates[0].startDate);
 
-  const {user}=useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const handleOpen = (i) => {
     setSlideNumber(i);
@@ -58,7 +68,7 @@ const Hotel = () => {
       newSlideNumber = slideNumber === 5 ? 0 : slideNumber + 1;
     }
 
-    setSlideNumber(newSlideNumber)
+    setSlideNumber(newSlideNumber);
   };
 
   const handleClick = () => {
@@ -73,9 +83,10 @@ const Hotel = () => {
       <Navbar />
       <Header type="list" />
       {loading ? (
-            <div className="spinner-border" role="status">
-                <span className="sr-only">Loading...</span>
-            </div>) : (
+        <div className="spinner-border" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+      ) : (
         <div className="hotelContainer">
           {open && (
             <div className="slider">
@@ -141,7 +152,8 @@ const Hotel = () => {
                   excellent location score of 9.8!
                 </span>
                 <h2>
-                  <b>Rs{days * data.cheapestPrice * options.room}</b> ({days}{" "} * nights)
+                  <b>Rs{days * data.cheapestPrice * options.room}</b> ({days} *
+                  nights)
                 </h2>
                 <button onClick={handleClick}>Reserve or Book Now!</button>
               </div>
@@ -151,7 +163,7 @@ const Hotel = () => {
           <Footer />
         </div>
       )}
-      {openModal && <Reserve setOpen={setOpenModal} hotelId={id}/>}
+      {openModal && <Reserve setOpen={setOpenModal} hotelId={id} />}
     </div>
   );
 };
