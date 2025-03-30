@@ -9,19 +9,17 @@ import Footer from "../../components/footer/Footer";
 const Home = () => {
   return (
     <div>
-      <Navbar/>
-      <Header/>
+      <Navbar />
+      <Header />
       <div className="homeContainer">
-        <Featured/>
+        <Featured />
         <h1 className="homeTitle">Browse by Property type</h1>
-        <PropertyList/>
-        <h1 className="homeTitle">Homes Guest love</h1>
-        <FeaturedProperties/>
-        <MailList/>
-        <Footer/>
+        <PropertyList />
+        <MailList />
+        <Footer />
       </div>
     </div>
-  )
+  );
 };
 
 export default Home;
